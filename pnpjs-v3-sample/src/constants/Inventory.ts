@@ -1,5 +1,5 @@
 export class ListName {
-    public static readonly ContractRequest = 'Contract Request';
+    public static readonly PNPV3LIST = 'PNPV3LIST';
 }
 
 export class ChoiceField {
