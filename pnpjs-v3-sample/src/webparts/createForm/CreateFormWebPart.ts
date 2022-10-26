@@ -11,6 +11,7 @@ import { IReadonlyTheme } from '@microsoft/sp-component-base';
 import * as strings from 'CreateFormWebPartStrings';
 import CreateForm from './components/CreateForm';
 import { ICreateFormProps } from './components/ICreateFormProps';
+import { getSP } from '../../config/pnp-config';
 
 export interface ICreateFormWebPartProps {
   description: string;
@@ -33,10 +34,11 @@ export default class CreateFormWebPart extends BaseClientSideWebPart<ICreateForm
     ReactDom.render(element, this.domElement);
   }
 
-  protected onInit(): Promise<void> {
+  protected async onInit(): Promise<void> {
     this._environmentMessage = this._getEnvironmentMessage();
 
-    return super.onInit();
+    await super.onInit();
+    getSP(this.context);
   }
 
   private _getEnvironmentMessage(): string {
