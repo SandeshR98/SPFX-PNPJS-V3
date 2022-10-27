@@ -1,5 +1,7 @@
 import { getSP } from '../config/pnp-config';
 import { SPFI } from '@pnp/sp';
+import { ISampleList } from '../models/ISampleListState';
+import { SitePages } from '../constants/Common';
 import logger from '../utils/Logger';
 
 export default class CommonService {
@@ -21,20 +23,38 @@ export default class CommonService {
 		}
 	};
 
-	public getListItems = async (listName: string, siteUrl: string): Promise<Array<object>> => {
+	public getListItems = async (listName: string, siteUrl: string): Promise<Array<ISampleList>> => {
 		const listItems: string = `ID, Name, Age, Address, DateOfBirth, Gender, MobileNo`;
-		// const Lookup: string = `ContractID, Vendor`;
+		const sampleListItems: ISampleList[] = [];
 
 		try {
 			const response = await this._sp.web.lists
 				.getByTitle(listName)
 				.items.select(listItems)
-				// .expand(Lookup)
 				.getAll();
 
-			console.log(response);
+			for (let item of response) {
+				const sampleListItem: ISampleList = {
+					Name: null,
+					Age: null,
+					Address: null,
+					DateOfBirth: null,
+					Gender: null,
+					MobileNo: null,
+					RecordViewUrl: null,
+				};
 
-			return response;
+				sampleListItem.Name = item.Name;
+				sampleListItem.Age = item.Age;
+				sampleListItem.Address = item.Address;
+				sampleListItem.DateOfBirth = item.DateOfBirth;
+				sampleListItem.Gender = item.Gender;
+				sampleListItem.MobileNo = item.MobileNo;
+				sampleListItem.RecordViewUrl = `${siteUrl}${SitePages.SampleForm}${item.Id}`;
+				sampleListItems.push(sampleListItem);
+			}
+
+			return sampleListItems;
 		} catch (err) {
 			logger.writeError('Common Service', 'getAll', err.stack);
 			throw err;

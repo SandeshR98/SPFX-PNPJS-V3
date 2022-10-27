@@ -5,8 +5,9 @@ export interface ISampleList {
     DateOfBirth: Date;
     Gender: string;
     MobileNo: number;
+    RecordViewUrl: string;
 }
 
 export interface ISampleListState {
-    items: ISampleListState[];
+    items: ISampleList[];
 }
