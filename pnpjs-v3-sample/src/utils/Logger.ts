@@ -6,9 +6,9 @@ const writeError = (serviceTitle?: string, functionName?: string, errorMessage?:
 	const style = {
 		label: `font-weight: bold;`,
 		pipe: `font-weight: bold;`,
-		title: `font-style: italic; color: yellow;`,
+		title: `font-style: italic; color: #FFFF00;`,
 		name: `color: #1a73e8;`,
-		message: `color: red;`,
+		message: `color: #FF0000;`,
 	};
 
 	console.log(

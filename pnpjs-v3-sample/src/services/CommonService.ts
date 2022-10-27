@@ -3,6 +3,7 @@ import { SPFI } from '@pnp/sp';
 import { ISampleList } from '../models/ISampleListState';
 import { SitePages } from '../constants/Common';
 import logger from '../utils/Logger';
+import { ISampleFormState } from '../models/ISampleFormState';
 
 export default class CommonService {
 	private _sp: SPFI = null;
@@ -14,11 +15,22 @@ export default class CommonService {
 
 	public getAll = async (listName: string): Promise<Array<object>> => {
 		try {
-			const response: object[] = await this._sp.web.lists.getByTitle(listName).items.getAll();
+			const response = await this._sp.web.lists.getByTitle(listName).items.getAll();
 
 			return response;
 		} catch (err) {
 			logger.writeError('Common Service', 'getAll', err.stack);
+			throw err;
+		}
+	};
+
+	public getListItemById = async (listName: string, itemId: number): Promise<ISampleFormState> => {
+		try {
+			const response = await this._sp.web.lists.getByTitle(listName).items.getById(itemId)();
+
+			return response;
+		} catch (err) {
+			logger.writeError('Common Service', 'getListItemById', err.stack);
 			throw err;
 		}
 	};
@@ -56,7 +68,7 @@ export default class CommonService {
 
 			return sampleListItems;
 		} catch (err) {
-			logger.writeError('Common Service', 'getAll', err.stack);
+			logger.writeError('Common Service', 'getListItems', err.stack);
 			throw err;
 		}
 	};
@@ -73,7 +85,7 @@ export default class CommonService {
 		}
 	};
 
-	public updateItem = async (listName: string, itemId: number, data: object): Promise<any> => {
+	public updateItem = async (listName: string, itemId: number, data: object): Promise<object> => {
 		try {
 			const request = await this._sp.web.lists
 				.getByTitle(listName)

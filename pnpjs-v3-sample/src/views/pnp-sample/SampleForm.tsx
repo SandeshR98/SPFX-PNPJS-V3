@@ -59,7 +59,22 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 
 		this.handleInputChange = this.handleInputChange.bind(this);
 		this.createRecord = this.createRecord.bind(this);
+		this.getItem = this.getItem.bind(this);
 	}
+
+	public componentDidMount(): void {
+		// GET ITEM BY ID
+		this.getItem();
+	}
+
+	private getItem = async () => {
+		const { recordId } = this.props || {};
+		const listItem = await this.commonService.getListItemById(ListName.PNPV3LIST, Number(recordId));
+		const { DateOfBirth, ...state } = listItem;
+		const dateofBirth = new Date(DateOfBirth.toString().split('T')[0]);
+
+		this.setState({ ...state, DateOfBirth: dateofBirth });
+	};
 
 	private handleInputChange = (
 		event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
