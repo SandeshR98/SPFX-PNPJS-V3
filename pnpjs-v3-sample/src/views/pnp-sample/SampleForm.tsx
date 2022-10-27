@@ -65,14 +65,15 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 		this.handleDelete = this.handleDelete.bind(this);
 	}
 
-	public componentDidMount(): void {
+	public async componentDidMount(): Promise<void> {
 		// GET ITEM BY ID
-		this.getItem();
+		await this.getItem();
 
-		this.getListId();
+		// GET LIST ID BY LIST NAME
+		await this.getListId();
 	}
 
-	private getItem = async () => {
+	private getItem = async (): Promise<void> => {
 		const { recordId } = this.props || {};
 		const listItem = await this.commonService.getListItemById(ListName.PNPV3LIST, Number(recordId));
 		const { DateOfBirth, ...state } = listItem;
@@ -81,7 +82,7 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 		this.setState({ ...state, DateOfBirth: dateofBirth });
 	};
 
-	private getListId = async () => {
+	private getListId = async (): Promise<void> => {
 		const listId = await this.commonService.getListIdByListName(ListName.PNPV3LIST);
 		this.setState({ SampleListId: listId });
 	};
@@ -107,7 +108,7 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 		this.setState({ Gender: selectedGender });
 	};
 
-	private handleSubmit = async () => {
+	private handleSubmit = async (): Promise<void> => {
 		const { recordId } = this.props || {};
 
 		try {
@@ -131,7 +132,7 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 		}
 	};
 
-	private handleDelete = async () => {
+	private handleDelete = async (): Promise<void> => {
 		const { recordId } = this.props || {};
 
 		try {
