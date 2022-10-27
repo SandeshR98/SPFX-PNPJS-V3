@@ -114,11 +114,7 @@ export default class CommonService {
 
 	public removeItem = async (listName: string, itemId: number): Promise<void> => {
 		try {
-			const response = await this._sp.web.lists.getByTitle(listName).items.getById(itemId).delete();
-
-			console.log(response);
-
-			return response;
+			await this._sp.web.lists.getByTitle(listName).items.getById(itemId).delete();
 		} catch (err) {
 			logger.writeError('Common Service', 'removeItem', err);
 			throw err;
