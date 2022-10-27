@@ -28,6 +28,7 @@ export default class CreateFormWebPart extends BaseClientSideWebPart<ICreateForm
       {
         context: this.context,
         siteUrl: this.context.pageContext.web.absoluteUrl,
+        recordId: null
       }
     );
 

@@ -66,7 +66,7 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 
 	// }
 
-	private handleInputChange = (event: any): void => {
+	private handleInputChange = (event: any) => {
 		this.setState({
 			...this.state,
 			[event.target.name]: event.target.value,
@@ -86,17 +86,22 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 	};
 
 	private createRecord = async () => {
+		const { recordId } = this.props || {};
+
 		try {
-			console.log('hii');
 			const data = {
 				Name: this.state.Name,
 				Age: this.state.Age,
 				Address: this.state.Address,
-				// DateofBirth: this.state.DateOfBirth,
-				// Gender: this.state.Gender,
-				// Mobile: this.state.MobileNo,
+				DateOfBirth: this.state.DateOfBirth,
+				Gender: this.state.Gender,
+				MobileNo: this.state.MobileNo,
 			};
-			console.log(data);
+
+			if (recordId) {
+				await this.commonService.updateItem(ListName.PNPV3LIST, Number(recordId), data);
+				return;
+			}
 			await this.commonService.createItem(ListName.PNPV3LIST, data);
 		} catch (error) {
 			alert('errrr');
@@ -155,7 +160,7 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 					<br />
 					<div>
 						<PrimaryButton
-							text='Save'
+							text={this.props.recordId ? 'Update' : 'Save'}
 							style={{ width: '10px', float: 'right' }}
 							onClick={this.createRecord}
 						/>
