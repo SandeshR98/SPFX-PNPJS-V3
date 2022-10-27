@@ -10,6 +10,17 @@ export default class CommonService {
 		this._sp = getSP();
 	}
 
+	public getAll = async (listName: string): Promise<object> => {
+		try {
+			const response: any[] = await this._sp.web.lists.getByTitle(listName).items.getAll();
+			console.log(response);
+			return response;
+		} catch (err) {
+			logger.writeError('Common Service', 'getAll', err.stack);
+			throw err;
+		}
+	};
+
 	public createItem = async (listName: string, data: object): Promise<object> => {
 		try {
 			const request = await this._sp.web.lists.getByTitle(listName).items.add(data);

@@ -3,6 +3,7 @@ import { spfi, SPFI, SPFx } from '@pnp/sp';
 import { LogLevel, PnPLogging } from '@pnp/logging';
 import '@pnp/sp/webs';
 import '@pnp/sp/lists';
+import '@pnp/sp/items/get-all';
 import '@pnp/sp/items';
 import '@pnp/sp/batching';
 import '@pnp/sp/fields';

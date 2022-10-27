@@ -49,11 +49,10 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 		super(props);
 		this.commonService = new CommonService();
 		this.state = {
-			ID: 0,
-			Name: null,
+			Name: undefined,
 			Age: null,
-			Address: null,
-			DateOfBirth: null,
+			Address: undefined,
+			DateOfBirth: undefined,
 			Gender: null,
 			MobileNo: null,
 		};
@@ -62,11 +61,9 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 		this.createRecord = this.createRecord.bind(this);
 	}
 
-	// public componentDidMount(): void {
-
-	// }
-
-	private handleInputChange = (event: any) => {
+	private handleInputChange = (
+		event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+	): void => {
 		this.setState({
 			...this.state,
 			[event.target.name]: event.target.value,

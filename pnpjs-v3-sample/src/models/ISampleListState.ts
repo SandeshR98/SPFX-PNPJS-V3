@@ -1,5 +1,4 @@
 export interface ISampleList {
-    ID: number;
     Name: string;
     Age: number;
     Address: string;
