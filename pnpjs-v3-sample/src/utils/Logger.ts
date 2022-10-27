@@ -1,7 +1,7 @@
 const writeError = (serviceTitle?: string, functionName?: string, errorMessage?: string): void => {
 	const title = serviceTitle?.toUpperCase();
 	const name = functionName?.toUpperCase();
-	const message = errorMessage && JSON.stringify(errorMessage);
+	const message = errorMessage;
 
 	const style = {
 		label: `font-weight: bold;`,
