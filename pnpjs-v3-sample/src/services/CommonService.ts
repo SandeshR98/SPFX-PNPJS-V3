@@ -90,10 +90,9 @@ export default class CommonService {
 
 	public createItem = async (listName: string, data: object): Promise<object> => {
 		try {
-			const request = await this._sp.web.lists.getByTitle(listName).items.add(data);
+			const response = await this._sp.web.lists.getByTitle(listName).items.add(data);
 
-			const response = request.data;
-			return response;
+			return response.data;
 		} catch (err) {
 			logger.writeError('Common Service', 'createItem', err.stack);
 			throw err;
@@ -102,13 +101,12 @@ export default class CommonService {
 
 	public updateItem = async (listName: string, itemId: number, data: object): Promise<object> => {
 		try {
-			const request = await this._sp.web.lists
+			const response = await this._sp.web.lists
 				.getByTitle(listName)
 				.items.getById(itemId)
 				.update(data);
 
-			const response = request.data;
-			return response;
+			return response.data;
 		} catch (err) {
 			logger.writeError('Common Service', 'updateItem', err);
 			throw err;
@@ -117,11 +115,11 @@ export default class CommonService {
 
 	public removeItem = async (listName: string, itemId: number): Promise<void> => {
 		try {
-			const request = await this._sp.web.lists.getByTitle(listName).items.getById(itemId).delete();
+			const response = await this._sp.web.lists.getByTitle(listName).items.getById(itemId).delete();
 
-			console.log(request);
+			console.log(response);
 
-			return request;
+			return response;
 		} catch (err) {
 			logger.writeError('Common Service', 'removeItem', err);
 			throw err;
