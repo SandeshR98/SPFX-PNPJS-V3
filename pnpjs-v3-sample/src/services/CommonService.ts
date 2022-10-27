@@ -4,7 +4,6 @@ import { ISampleList } from '../models/ISampleListState';
 import { SitePages } from '../constants/Common';
 import logger from '../utils/Logger';
 import { ISampleFormState } from '../models/ISampleFormState';
-import { IListInfo } from '@pnp/sp/lists';
 
 export default class CommonService {
 	private _sp: SPFI = null;
