@@ -89,9 +89,9 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 			{ state: 'SampleListVId', list: ListName.PNPLIST },
 		];
 
-		for (let item of listsArray) {
+		for (const item of listsArray) {
 			const listId = await this.commonService.getListIdByListName(item.list);
-			this.setState({ ...this.state, [item.state]: listId });
+			this.setState({ ...this.state, [item.state]: listId ?? null });
 		}
 	};
 
@@ -207,16 +207,15 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 							style={{ width: '10px', float: 'right' }}
 							onClick={this.handleSubmit}
 						/>
-					</div>
-					{this.props.recordId && (
-						<div>
+
+						{this.props.recordId && (
 							<PrimaryButton
 								text='Delete'
 								style={{ width: '10px', float: 'right' }}
 								onClick={this.handleDelete}
 							/>
-						</div>
-					)}
+						)}
+					</div>
 				</Stack>
 			</Stack>
 		);
