@@ -11,6 +11,7 @@ import { IReadonlyTheme } from '@microsoft/sp-component-base';
 import * as strings from 'ListFormWebPartStrings';
 import ListForm from './components/ListForm';
 import { IListFormProps } from './components/IListFormProps';
+import { getSP } from '../../config/pnp-config';
 
 export interface IListFormWebPartProps {
   description: string;
@@ -33,10 +34,11 @@ export default class ListFormWebPart extends BaseClientSideWebPart<IListFormWebP
     ReactDom.render(element, this.domElement);
   }
 
-  protected onInit(): Promise<void> {
+  protected async onInit(): Promise<void> {
     this._environmentMessage = this._getEnvironmentMessage();
 
-    return super.onInit();
+    await super.onInit();
+    getSP(this.context);
   }
 
   private _getEnvironmentMessage(): string {
