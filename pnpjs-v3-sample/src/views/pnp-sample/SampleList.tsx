@@ -93,16 +93,25 @@ export default class SampleList extends React.Component<IListFormProps, ISampleL
             { key: 'column7', name: 'Action', fieldName: 'RecordViewUrl', minWidth: 80, maxWidth: 80, isResizable: false },
         ];
 
+		this.getALLItems = this.getALLItems.bind(this);
 		this.getListItems = this.getListItems.bind(this);
 	}
 
 	public componentDidMount(): void {
+		// GET ALL LIST ITEMS
+		this.getALLItems();
+
 		this.getListItems();
 	}
 
-	private getListItems = async () => {
-		const listItems = await this.commonService.getAll(ListName.PNPV3LIST);
+	private getALLItems = async () => {
+		const allItems = await this.commonService.getAll(ListName.PNPV3LIST);
+		console.log(allItems);
+	};
 
+	private getListItems = async () => {
+		const { siteUrl } = this.props || {};
+		const listItems = await this.commonService.getListItems(ListName.PNPV3LIST, siteUrl);
 		console.log(listItems);
 	};
 
