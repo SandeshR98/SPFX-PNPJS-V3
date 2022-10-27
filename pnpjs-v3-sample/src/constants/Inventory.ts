@@ -1,5 +1,6 @@
 export class ListName {
     public static readonly PNPV3LIST = 'PNPV3LIST';
+    public static readonly PNPLIST = 'PNPLIST';
 }
 
 export class ChoiceField {

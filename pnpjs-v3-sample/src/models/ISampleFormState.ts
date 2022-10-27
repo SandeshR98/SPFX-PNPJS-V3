@@ -6,4 +6,5 @@ export interface ISampleFormState {
 	Gender: string;
 	MobileNo: number;
 	SampleListId: string;
+	SampleListVId: string;
 }

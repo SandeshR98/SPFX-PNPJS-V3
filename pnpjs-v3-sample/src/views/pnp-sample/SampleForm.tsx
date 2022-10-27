@@ -56,6 +56,7 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 			Gender: null,
 			MobileNo: null,
 			SampleListId: null,
+			SampleListVId: null,
 		};
 
 		this.handleInputChange = this.handleInputChange.bind(this);
@@ -83,8 +84,15 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 	};
 
 	private getListId = async (): Promise<void> => {
-		const listId = await this.commonService.getListIdByListName(ListName.PNPV3LIST);
-		this.setState({ SampleListId: listId });
+		const listsArray = [
+			{ state: 'SampleListId', list: ListName.PNPV3LIST },
+			{ state: 'SampleListVId', list: ListName.PNPLIST },
+		];
+
+		for (let item of listsArray) {
+			const listId = await this.commonService.getListIdByListName(item.list);
+			this.setState({ ...this.state, [item.state]: listId });
+		}
 	};
 
 	private handleInputChange = (
@@ -136,6 +144,7 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 		const { recordId } = this.props || {};
 
 		try {
+			console.log(this.state);
 			await this.commonService.removeItem(ListName.PNPV3LIST, Number(recordId));
 		} catch (error) {
 			alert('errrr');
