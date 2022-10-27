@@ -55,16 +55,21 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 			DateOfBirth: undefined,
 			Gender: null,
 			MobileNo: null,
+			SampleListId: null,
 		};
 
 		this.handleInputChange = this.handleInputChange.bind(this);
-		this.createRecord = this.createRecord.bind(this);
+		this.handleSubmit = this.handleSubmit.bind(this);
 		this.getItem = this.getItem.bind(this);
+		this.getListId = this.getListId.bind(this);
+		this.handleDelete = this.handleDelete.bind(this);
 	}
 
 	public componentDidMount(): void {
 		// GET ITEM BY ID
 		this.getItem();
+
+		this.getListId();
 	}
 
 	private getItem = async () => {
@@ -74,6 +79,11 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 		const dateofBirth = new Date(DateOfBirth.toString().split('T')[0]);
 
 		this.setState({ ...state, DateOfBirth: dateofBirth });
+	};
+
+	private getListId = async () => {
+		const listId = await this.commonService.getListIdByListName(ListName.PNPV3LIST);
+		this.setState({ SampleListId: listId });
 	};
 
 	private handleInputChange = (
@@ -97,7 +107,7 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 		this.setState({ Gender: selectedGender });
 	};
 
-	private createRecord = async () => {
+	private handleSubmit = async () => {
 		const { recordId } = this.props || {};
 
 		try {
@@ -115,6 +125,17 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 				return;
 			}
 			await this.commonService.createItem(ListName.PNPV3LIST, data);
+		} catch (error) {
+			alert('errrr');
+			console.log(error);
+		}
+	};
+
+	private handleDelete = async () => {
+		const { recordId } = this.props || {};
+
+		try {
+			await this.commonService.removeItem(ListName.PNPV3LIST, Number(recordId));
 		} catch (error) {
 			alert('errrr');
 			console.log(error);
@@ -174,9 +195,18 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 						<PrimaryButton
 							text={this.props.recordId ? 'Update' : 'Save'}
 							style={{ width: '10px', float: 'right' }}
-							onClick={this.createRecord}
+							onClick={this.handleSubmit}
 						/>
 					</div>
+					{this.props.recordId && (
+						<div>
+							<PrimaryButton
+								text='Delete'
+								style={{ width: '10px', float: 'right' }}
+								onClick={this.handleDelete}
+							/>
+						</div>
+					)}
 				</Stack>
 			</Stack>
 		);

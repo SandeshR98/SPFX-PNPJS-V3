@@ -4,6 +4,7 @@ import { ISampleList } from '../models/ISampleListState';
 import { SitePages } from '../constants/Common';
 import logger from '../utils/Logger';
 import { ISampleFormState } from '../models/ISampleFormState';
+import { IListInfo } from '@pnp/sp/lists';
 
 export default class CommonService {
 	private _sp: SPFI = null;
@@ -45,7 +46,7 @@ export default class CommonService {
 				.items.select(listItems)
 				.getAll();
 
-			for (let item of response) {
+			for (const item of response) {
 				const sampleListItem: ISampleList = {
 					Name: null,
 					Age: null,
@@ -69,6 +70,20 @@ export default class CommonService {
 			return sampleListItems;
 		} catch (err) {
 			logger.writeError('Common Service', 'getListItems', err.stack);
+			throw err;
+		}
+	};
+
+	public getListIdByListName = async (listName: string): Promise<string> => {
+		const listItems: string = `Id`;
+
+		try {
+			const response = await this._sp.web.lists.getByTitle(listName).select(listItems)();
+			const listId = response.Id;
+
+			return listId;
+		} catch (err) {
+			logger.writeError('Common Service', 'getListItemById', err.stack);
 			throw err;
 		}
 	};
@@ -100,12 +115,13 @@ export default class CommonService {
 		}
 	};
 
-	public removeItem = async (listName: string, data: object): Promise<any> => {
+	public removeItem = async (listName: string, itemId: number): Promise<void> => {
 		try {
-			const request = await this._sp.web.lists.getByTitle(listName).items.add(data);
-			const response = request.data;
+			const request = await this._sp.web.lists.getByTitle(listName).items.getById(itemId).delete();
 
-			return response;
+			console.log(request);
+
+			return request;
 		} catch (err) {
 			logger.writeError('Common Service', 'removeItem', err);
 			throw err;
