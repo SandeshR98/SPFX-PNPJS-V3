@@ -10,10 +10,30 @@ export default class CommonService {
 		this._sp = getSP();
 	}
 
-	public getAll = async (listName: string): Promise<object> => {
+	public getAll = async (listName: string): Promise<Array<object>> => {
 		try {
-			const response: any[] = await this._sp.web.lists.getByTitle(listName).items.getAll();
+			const response: object[] = await this._sp.web.lists.getByTitle(listName).items.getAll();
+
+			return response;
+		} catch (err) {
+			logger.writeError('Common Service', 'getAll', err.stack);
+			throw err;
+		}
+	};
+
+	public getListItems = async (listName: string, siteUrl: string): Promise<Array<object>> => {
+		const listItems: string = `ID, Name, Age, Address, DateOfBirth, Gender, MobileNo`;
+		// const Lookup: string = `ContractID, Vendor`;
+
+		try {
+			const response = await this._sp.web.lists
+				.getByTitle(listName)
+				.items.select(listItems)
+				// .expand(Lookup)
+				.getAll();
+
 			console.log(response);
+
 			return response;
 		} catch (err) {
 			logger.writeError('Common Service', 'getAll', err.stack);
