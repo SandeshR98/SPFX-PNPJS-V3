@@ -163,11 +163,15 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 			}
 			await this.commonService.createItem(ListName.PNPV3LIST, data);
 
-			await this.commonService.addFileToDocumentLibrary(
-				DocumentLibrary.Documents.Title,
-				'CR-1a',
-				this.state.Files
-			);
+			if (this.state.Files?.length > 0) {
+				await this.commonService.addFileToDocumentLibrary(
+					DocumentLibrary.Documents.Title,
+					'CR-1a',
+					this.state.Files
+				);
+
+				this.handleRemoveFile();
+			}
 		} catch (error) {
 			console.log(error);
 		}
