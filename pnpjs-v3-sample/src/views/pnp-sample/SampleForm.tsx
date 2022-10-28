@@ -2,13 +2,22 @@ import * as React from 'react';
 import { ICreateFormProps } from '../../webparts/createForm/components/ICreateFormProps';
 import { TextField } from 'office-ui-fabric-react/lib/TextField';
 import { Stack, IStackProps, IStackStyles } from 'office-ui-fabric-react/lib/Stack';
-import { DatePicker, mergeStyleSets } from 'office-ui-fabric-react';
+import {
+	DatePicker,
+	getTheme,
+	DefaultButton,
+	IconButton,
+	Label,
+	mergeStyleSets,
+	IIconProps,
+} from 'office-ui-fabric-react';
 import { Dropdown, IDropdownStyles, IDropdownOption } from 'office-ui-fabric-react/lib/Dropdown';
 import { PrimaryButton } from 'office-ui-fabric-react';
 import { ChoiceField, ListName } from '../../constants/Inventory';
 import { ISampleFormState } from '../../models/ISampleFormState';
 import CommonService from '../../services/CommonService';
 
+const theme = getTheme();
 const stackTokens = { childrenGap: 50 };
 const stackStyles: Partial<IStackStyles> = { root: { width: 650 } };
 const columnProps: Partial<IStackProps> = {
@@ -27,6 +36,21 @@ const dropdownStyles: Partial<IDropdownStyles> = {
 	dropdown: { width: 300 },
 };
 
+const iconButtonStyles = {
+	root: {
+		color: theme.palette.neutralPrimary,
+		marginLeft: 'auto',
+		marginTop: '4px',
+		marginRight: '2px',
+	},
+	rootHovered: {
+		color: theme.palette.neutralDark,
+	},
+};
+
+const uploadIcon: IIconProps = { iconName: 'CloudUpload' };
+const removeIcon: IIconProps = { iconName: 'RemoveFilter' };
+
 export default class SampleForm extends React.Component<ICreateFormProps, ISampleFormState> {
 	private commonService: CommonService;
 
@@ -43,6 +67,7 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 			SampleListId: null,
 			SampleListVId: null,
 			GenderChoices: [],
+			files: null,
 		};
 
 		this.handleInputChange = this.handleInputChange.bind(this);
@@ -164,6 +189,20 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 		}
 	};
 
+	private openFileDialog = (): void => {
+		document.getElementById('sample-file-picker').click();
+	};
+
+	private removeFile = (): void => {
+		this.setState({ files: null });
+	};
+
+	private onUploadDocuments = (e: React.ChangeEvent<HTMLInputElement>): void => {
+		this.setState({ files: e.target.files });
+		console.log(e.target.files);
+		console.log(this.state.files);
+	};
+
 	public render(): React.ReactElement<ICreateFormProps> {
 		return (
 			<Stack horizontal tokens={stackTokens} styles={stackStyles}>
@@ -189,6 +228,49 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 						value={this.state.DateOfBirth}
 						onSelectDate={this.onSelectDate}
 					/>
+
+					<div>
+						<div>
+							<input
+								id='sample-file-picker'
+								multiple
+								type='file'
+								name='File'
+								style={{ display: 'none' }}
+								onChange={(e) => this.onUploadDocuments(e)}
+							/>
+						</div>
+						<DefaultButton
+							text='Upload Files'
+							onClick={this.openFileDialog}
+							iconProps={uploadIcon}
+						/>
+
+						{this.state.files?.length > 0 && (
+							<table>
+								<tr>
+									<td>
+										<Label
+											style={{
+												fontSize: '12px',
+												fontWeight: 400,
+												color: '#666666',
+											}}
+										>
+											{this.state.files?.length} Files available
+										</Label>
+									</td>
+									<td id='fileRemoveButton'>
+										<IconButton
+											styles={iconButtonStyles}
+											iconProps={removeIcon}
+											onClick={this.removeFile}
+										/>
+									</td>
+								</tr>
+							</table>
+						)}
+					</div>
 				</Stack>
 				<Stack {...columnProps}>
 					<TextField

@@ -10,4 +10,5 @@ export interface ISampleFormState {
 	SampleListId: string;
 	SampleListVId: string;
 	GenderChoices: IDropdownOption[];
+	files: FileList
 }
