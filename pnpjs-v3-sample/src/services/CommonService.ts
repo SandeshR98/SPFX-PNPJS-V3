@@ -2,8 +2,9 @@ import { getSP } from '../config/pnp-config';
 import { SPFI } from '@pnp/sp';
 import { ISampleList } from '../models/ISampleListState';
 import { SitePages } from '../constants/Common';
-import logger from '../utils/Logger';
 import { ISampleFormState } from '../models/ISampleFormState';
+import { DropdownMenuItemType, IDropdownOption } from 'office-ui-fabric-react/lib/Dropdown';
+import logger from '../utils/Logger';
 
 export default class CommonService {
 	private _sp: SPFI = null;
@@ -83,6 +84,43 @@ export default class CommonService {
 			return listId;
 		} catch (err) {
 			logger.writeError('Common Service', 'getListItemById', err.stack);
+			throw err;
+		}
+	};
+
+	public getChoiceField = async (listName: string, field: string): Promise<IDropdownOption[]> => {
+		const choices: IDropdownOption[] = [];
+
+		try {
+			const response = await this._sp.web.lists.getByTitle(listName).fields.getByTitle(field)();
+			const options = response.Choices;
+			for (const item of options) choices.push({ key: item, text: item });
+
+			const dropdownHeader = {
+				key: `${field?.toLowerCase()}Header`,
+				text: field,
+				itemType: DropdownMenuItemType.Header,
+			};
+
+			choices.unshift(dropdownHeader);
+
+			return choices;
+		} catch (err) {
+			logger.writeError('Common Service', 'getChoiceField', err.stack);
+			throw err;
+		}
+	};
+
+	public checkLoggedUserGroups = async (groupName: string): Promise<boolean> => {
+		try {
+			// const loggedUser = await this._sp.web.currentUser.get();
+			let isBuyer: boolean = false;
+
+			// const response = await this._sp.web.lists.getByTitle(listName).items.add(data);
+
+			return;
+		} catch (err) {
+			logger.writeError('Common Service', 'checkLoggedUserGroups', err.stack);
 			throw err;
 		}
 	};

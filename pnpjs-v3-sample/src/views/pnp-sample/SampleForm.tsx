@@ -5,7 +5,6 @@ import { Stack, IStackProps, IStackStyles } from 'office-ui-fabric-react/lib/Sta
 import { DatePicker, mergeStyleSets } from 'office-ui-fabric-react';
 import {
 	Dropdown,
-	DropdownMenuItemType,
 	IDropdownStyles,
 	IDropdownOption,
 } from 'office-ui-fabric-react/lib/Dropdown';
@@ -32,16 +31,6 @@ const dropdownStyles: Partial<IDropdownStyles> = {
 	dropdown: { width: 300 },
 };
 
-const options: IDropdownOption[] = [
-	{
-		key: 'genderHeader',
-		text: 'Gender',
-		itemType: DropdownMenuItemType.Header,
-	},
-	{ key: 'M', text: 'Male' },
-	{ key: 'F', text: 'Female' },
-	{ key: 'O', text: 'Other' },
-];
 export default class SampleForm extends React.Component<ICreateFormProps, ISampleFormState> {
 	private commonService: CommonService;
 
@@ -57,12 +46,11 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 			MobileNo: null,
 			SampleListId: null,
 			SampleListVId: null,
+			GenderChoices: [],
 		};
 
 		this.handleInputChange = this.handleInputChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
-		this.getItem = this.getItem.bind(this);
-		this.getListId = this.getListId.bind(this);
 		this.handleDelete = this.handleDelete.bind(this);
 	}
 
@@ -72,26 +60,51 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 
 		// GET LIST ID BY LIST NAME
 		await this.getListId();
+
+		// GET CHOICE FIELD VALUES
+		await this.getGenderChoices();
 	}
 
 	private getItem = async (): Promise<void> => {
 		const { recordId } = this.props || {};
-		const listItem = await this.commonService.getListItemById(ListName.PNPV3LIST, Number(recordId));
-		const { DateOfBirth, ...state } = listItem;
-		const dateofBirth = new Date(DateOfBirth.toString().split('T')[0]);
 
-		this.setState({ ...state, DateOfBirth: dateofBirth });
+		try {
+			const listItem = await this.commonService.getListItemById(
+				ListName.PNPV3LIST,
+				Number(recordId)
+			);
+			const { DateOfBirth, ...state } = listItem;
+			const dateofBirth = new Date(DateOfBirth.toString().split('T')[0]);
+
+			this.setState({ ...state, DateOfBirth: dateofBirth });
+		} catch (error) {
+			// Display Error Message Here
+		}
 	};
 
+	// USE THIS FOR LIST ITEM PICKERS
 	private getListId = async (): Promise<void> => {
-		const listsArray = [
-			{ state: 'SampleListId', list: ListName.PNPV3LIST },
-			{ state: 'SampleListVId', list: ListName.PNPLIST },
-		];
+		try {
+			const listsArray = [
+				{ state: 'SampleListId', list: ListName.PNPV3LIST },
+				{ state: 'SampleListVId', list: ListName.PNPLIST },
+			];
 
-		for (const item of listsArray) {
-			const listId = await this.commonService.getListIdByListName(item.list);
-			this.setState({ ...this.state, [item.state]: listId ?? null });
+			for (const item of listsArray) {
+				const listId = await this.commonService.getListIdByListName(item.list);
+				this.setState({ ...this.state, [item.state]: listId ?? null });
+			}
+		} catch (error) {
+			// Display Error Message Here
+		}
+	};
+
+	private getGenderChoices = async (): Promise<void> => {
+		try {
+			const choices = await this.commonService.getChoiceField(ListName.PNPV3LIST, 'Gender');
+			this.setState({ GenderChoices: choices });
+		} catch (error) {
+			// Display Error Message Here
 		}
 	};
 
@@ -188,7 +201,7 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 					<Dropdown
 						placeholder='Select an option'
 						label='Gender'
-						options={options}
+						options={this.state.GenderChoices}
 						styles={dropdownStyles}
 						selectedKey={this.state.Gender}
 						onChange={this.onSelectDropdown}
