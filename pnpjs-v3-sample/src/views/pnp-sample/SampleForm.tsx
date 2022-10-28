@@ -13,7 +13,7 @@ import {
 } from 'office-ui-fabric-react';
 import { Dropdown, IDropdownStyles, IDropdownOption } from 'office-ui-fabric-react/lib/Dropdown';
 import { PrimaryButton } from 'office-ui-fabric-react';
-import { ChoiceField, ListName } from '../../constants/Inventory';
+import { ChoiceField, DocumentLibrary, ListName } from '../../constants/Inventory';
 import { ISampleFormState } from '../../models/ISampleFormState';
 import CommonService from '../../services/CommonService';
 
@@ -67,7 +67,7 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 			SampleListId: null,
 			SampleListVId: null,
 			GenderChoices: [],
-			files: null,
+			Files: null,
 		};
 
 		this.handleInputChange = this.handleInputChange.bind(this);
@@ -92,10 +92,7 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 		try {
 			if (!recordId) return;
 
-			const listItem = await this.commonService.getListItemById(
-				ListName.PNPV3LIST,
-				Number(recordId)
-			);
+			const listItem = await this.commonService.getListItemById(ListName.PNPV3LIST, Number(recordId));
 			const { DateOfBirth, ...state } = listItem;
 
 			const dateofBirth = new Date(DateOfBirth.toString().split('T')[0]);
@@ -124,19 +121,14 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 
 	private getGenderChoices = async (): Promise<void> => {
 		try {
-			const choices = await this.commonService.getChoiceField(
-				ListName.PNPV3LIST,
-				ChoiceField.Gender
-			);
+			const choices = await this.commonService.getChoiceField(ListName.PNPV3LIST, ChoiceField.Gender);
 			this.setState({ GenderChoices: choices });
 		} catch (error) {
 			// Display Error Message Here
 		}
 	};
 
-	private handleInputChange = (
-		event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-	): void => {
+	private handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
 		this.setState({
 			...this.state,
 			[event.target.name]: event.target.value,
@@ -147,10 +139,7 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 		this.setState({ DateOfBirth: date });
 	};
 
-	private onSelectDropdown = (
-		event: React.FormEvent<HTMLDivElement>,
-		item: IDropdownOption
-	): void => {
+	private onSelectDropdown = (event: React.FormEvent<HTMLDivElement>, item: IDropdownOption): void => {
 		const selectedGender = item.key.toString();
 		this.setState({ Gender: selectedGender });
 	};
@@ -173,8 +162,13 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 				return;
 			}
 			await this.commonService.createItem(ListName.PNPV3LIST, data);
+
+			await this.commonService.addFileToDocumentLibrary(
+				DocumentLibrary.Documents.Title,
+				'CR-1a',
+				this.state.Files
+			);
 		} catch (error) {
-			alert('errrr');
 			console.log(error);
 		}
 	};
@@ -196,11 +190,11 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 	};
 
 	private handleRemoveFile = (): void => {
-		this.setState({ files: null });
+		this.setState({ Files: null });
 	};
 
 	private handleFilePicker = (event: React.ChangeEvent<HTMLInputElement>): void => {
-		this.setState({ files: event.target.files });
+		this.setState({ Files: event.target.files });
 		console.log(event.target.files);
 	};
 
@@ -211,6 +205,7 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 					<TextField
 						label='Name'
 						name='Name'
+						placeholder='Enter Name'
 						value={this.state.Name}
 						onChange={this.handleInputChange}
 					/>
@@ -241,13 +236,9 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 								onChange={(event) => this.handleFilePicker(event)}
 							/>
 						</div>
-						<DefaultButton
-							text='Upload Files'
-							onClick={this.handleFileDialog}
-							iconProps={uploadIcon}
-						/>
+						<DefaultButton text='Upload Files' onClick={this.handleFileDialog} iconProps={uploadIcon} />
 
-						{this.state.files?.length > 0 && (
+						{this.state.Files?.length > 0 && (
 							<table>
 								<tr>
 									<td>
@@ -258,15 +249,11 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 												color: '#666666',
 											}}
 										>
-											{this.state.files?.length} Files available
+											{this.state.Files?.length} Files available
 										</Label>
 									</td>
 									<td id='fileRemoveButton'>
-										<IconButton
-											styles={iconButtonStyles}
-											iconProps={removeIcon}
-											onClick={this.handleRemoveFile}
-										/>
+										<IconButton styles={iconButtonStyles} iconProps={removeIcon} onClick={this.handleRemoveFile} />
 									</td>
 								</tr>
 							</table>
@@ -274,12 +261,7 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 					</div>
 				</Stack>
 				<Stack {...columnProps}>
-					<TextField
-						label='Address'
-						name='Address'
-						value={this.state.Address}
-						onChange={this.handleInputChange}
-					/>
+					<TextField label='Address' name='Address' value={this.state.Address} onChange={this.handleInputChange} />
 					<Dropdown
 						placeholder='Select an option'
 						label='Gender'
@@ -291,6 +273,7 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 					<TextField
 						label='Mobile No.'
 						type='number'
+						placeholder='Enter Mobile'
 						name='MobileNo'
 						value={String(this.state.MobileNo)}
 						onChange={this.handleInputChange}
@@ -304,11 +287,7 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 						/>
 
 						{this.props.recordId && (
-							<PrimaryButton
-								text='Delete'
-								style={{ width: '10px', float: 'right' }}
-								onClick={this.handleDelete}
-							/>
+							<PrimaryButton text='Delete' style={{ width: '10px', float: 'right' }} onClick={this.handleDelete} />
 						)}
 					</div>
 				</Stack>

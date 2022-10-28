@@ -5,7 +5,7 @@ import { SitePages } from '../constants/Common';
 import { ISampleFormState } from '../models/ISampleFormState';
 import { DropdownMenuItemType, IDropdownOption } from 'office-ui-fabric-react/lib/Dropdown';
 import logger from '../utils/Logger';
-
+import { DocumentLibrary } from '../constants/Inventory';
 export default class CommonService {
 	private _sp: SPFI = null;
 
@@ -41,10 +41,7 @@ export default class CommonService {
 		const sampleListItems: ISampleList[] = [];
 
 		try {
-			const response = await this._sp.web.lists
-				.getByTitle(listName)
-				.items.select(listItems)
-				.getAll();
+			const response = await this._sp.web.lists.getByTitle(listName).items.select(listItems).getAll();
 
 			for (const item of response) {
 				const sampleListItem: ISampleList = {
@@ -123,6 +120,40 @@ export default class CommonService {
 		}
 	};
 
+	private isLibraryFolderExist = async (folderPath: string): Promise<boolean> => {
+		const relativePath: string = `${DocumentLibrary.Documents.RelativePath}${folderPath}`;
+
+		try {
+			const libraryFolder = await this._sp.web.getFolderByServerRelativePath(relativePath)();
+
+			return libraryFolder.Exists;
+		} catch (err) {
+			logger.writeError('Common Service', 'isLibraryFolderExist', err.stack);
+			return false;
+		}
+	};
+
+	public addFileToDocumentLibrary = async (library: string, folder: string, files: FileList): Promise<void> => {
+		const folderPath: string = `${library}/${folder}`;
+
+		try {
+			const isFolder = await this.isLibraryFolderExist(folderPath);
+			if (!isFolder) await this._sp.web.folders.addUsingPath(folderPath);
+
+			for (let index = 0; index < files?.length; index++) {
+				const file = files[index];
+				const fileName = file.name;
+
+				await this._sp.web
+					.getFolderByServerRelativePath(folderPath)
+					.files.addUsingPath(fileName, file, { Overwrite: true });
+			}
+		} catch (err) {
+			logger.writeError('Common Service', 'createItem', err.stack);
+			throw err;
+		}
+	};
+
 	public createItem = async (listName: string, data: object): Promise<object> => {
 		try {
 			const response = await this._sp.web.lists.getByTitle(listName).items.add(data);
@@ -136,10 +167,7 @@ export default class CommonService {
 
 	public updateItem = async (listName: string, itemId: number, data: object): Promise<object> => {
 		try {
-			const response = await this._sp.web.lists
-				.getByTitle(listName)
-				.items.getById(itemId)
-				.update(data);
+			const response = await this._sp.web.lists.getByTitle(listName).items.getById(itemId).update(data);
 
 			return response.data;
 		} catch (err) {
