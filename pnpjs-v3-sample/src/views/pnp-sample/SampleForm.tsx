@@ -10,6 +10,8 @@ import {
 	Label,
 	mergeStyleSets,
 	IIconProps,
+	Spinner,
+	SpinnerSize,
 } from 'office-ui-fabric-react';
 import { Dropdown, IDropdownStyles, IDropdownOption } from 'office-ui-fabric-react/lib/Dropdown';
 import { PrimaryButton } from 'office-ui-fabric-react';
@@ -297,6 +299,14 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 					/>
 					<br />
 					<div>
+						<PrimaryButton color='primary' text={!this.props.recordId && 'Save'}>
+							{this.props.recordId && (
+								<span style={{ position: 'fixed' }}>
+									<Spinner size={SpinnerSize.small} />
+								</span>
+							)}
+						</PrimaryButton>
+
 						<PrimaryButton
 							text={this.props.recordId ? 'Update' : 'Save'}
 							style={{ width: '10px', float: 'right' }}
