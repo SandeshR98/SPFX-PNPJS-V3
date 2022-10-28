@@ -90,13 +90,15 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 		const { recordId } = this.props || {};
 
 		try {
+			if (!recordId) return;
+
 			const listItem = await this.commonService.getListItemById(
 				ListName.PNPV3LIST,
 				Number(recordId)
 			);
 			const { DateOfBirth, ...state } = listItem;
-			const dateofBirth = new Date(DateOfBirth.toString().split('T')[0]);
 
+			const dateofBirth = new Date(DateOfBirth.toString().split('T')[0]);
 			this.setState({ ...state, DateOfBirth: dateofBirth });
 		} catch (error) {
 			// Display Error Message Here
