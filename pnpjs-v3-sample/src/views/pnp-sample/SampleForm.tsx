@@ -183,7 +183,6 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 		const { recordId } = this.props || {};
 
 		try {
-			console.log(this.state);
 			await this.commonService.removeItem(ListName.PNPV3LIST, Number(recordId));
 		} catch (error) {
 			alert('errrr');
