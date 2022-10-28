@@ -120,6 +120,7 @@ export default class CommonService {
 		}
 	};
 
+	// PRIVATE METHOD TO CHECK IF FOLDER EXIST IN DOCUMENT LIBRARY
 	private isLibraryFolderExist = async (folderPath: string): Promise<boolean> => {
 		const relativePath: string = `${DocumentLibrary.Documents.RelativePath}${folderPath}`;
 
