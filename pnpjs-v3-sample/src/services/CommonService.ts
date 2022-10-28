@@ -113,12 +113,10 @@ export default class CommonService {
 
 	public checkLoggedUserGroups = async (groupName: string): Promise<boolean> => {
 		try {
-			// const loggedUser = await this._sp.web.currentUser.get();
-			let isBuyer: boolean = false;
+			const loggedUserGroups = await this._sp.web.currentUser.groups();
+			const hasPermissions = loggedUserGroups.some((x) => x.Title === groupName);
 
-			// const response = await this._sp.web.lists.getByTitle(listName).items.add(data);
-
-			return;
+			return hasPermissions;
 		} catch (err) {
 			logger.writeError('Common Service', 'checkLoggedUserGroups', err.stack);
 			throw err;

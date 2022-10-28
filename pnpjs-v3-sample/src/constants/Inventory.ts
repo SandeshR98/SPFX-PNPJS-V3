@@ -4,7 +4,7 @@ export class ListName {
 }
 
 export class ChoiceField {
-    public static readonly Table = 'Table';
+    public static readonly Gender = 'Gender';
 }
 export class DocumentLibrary {
     public static readonly IFRCDocuments = 'IFRCDocuments';

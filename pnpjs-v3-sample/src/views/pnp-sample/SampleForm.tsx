@@ -3,13 +3,9 @@ import { ICreateFormProps } from '../../webparts/createForm/components/ICreateFo
 import { TextField } from 'office-ui-fabric-react/lib/TextField';
 import { Stack, IStackProps, IStackStyles } from 'office-ui-fabric-react/lib/Stack';
 import { DatePicker, mergeStyleSets } from 'office-ui-fabric-react';
-import {
-	Dropdown,
-	IDropdownStyles,
-	IDropdownOption,
-} from 'office-ui-fabric-react/lib/Dropdown';
+import { Dropdown, IDropdownStyles, IDropdownOption } from 'office-ui-fabric-react/lib/Dropdown';
 import { PrimaryButton } from 'office-ui-fabric-react';
-import { ListName } from '../../constants/Inventory';
+import { ChoiceField, ListName } from '../../constants/Inventory';
 import { ISampleFormState } from '../../models/ISampleFormState';
 import CommonService from '../../services/CommonService';
 
@@ -101,7 +97,10 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 
 	private getGenderChoices = async (): Promise<void> => {
 		try {
-			const choices = await this.commonService.getChoiceField(ListName.PNPV3LIST, 'Gender');
+			const choices = await this.commonService.getChoiceField(
+				ListName.PNPV3LIST,
+				ChoiceField.Gender
+			);
 			this.setState({ GenderChoices: choices });
 		} catch (error) {
 			// Display Error Message Here

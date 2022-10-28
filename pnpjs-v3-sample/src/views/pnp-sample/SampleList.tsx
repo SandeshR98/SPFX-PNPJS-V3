@@ -15,12 +15,13 @@ import {
 	Sticky,
 	StickyPositionType,
 	TooltipHost,
-} from 'office-ui-fabric-react';
+} from '@fluentui/react';
 import styles from '../../webparts/listForm/components/ListForm.module.scss';
 import { ISampleList, ISampleListState } from '../../models/ISampleListState';
 import CommonService from '../../services/CommonService';
 import { ListName } from '../../constants/Inventory';
 import { Link } from '@fluentui/react';
+import { UserGroups } from '../../constants/Security';
 
 const classNames = mergeStyleSets({
 	wrapper: {
@@ -97,23 +98,31 @@ export default class SampleList extends React.Component<IListFormProps, ISampleL
 		this.getListItems = this.getListItems.bind(this);
 	}
 
-	public componentDidMount(): void {
+	public async componentDidMount(): Promise<void> {
 		// GET ALL LIST ITEMS
-		this.getALLItems();
+		await this.getALLItems();
 
 		// GET SPECIFIC ITEMS
-		this.getListItems();
+		await this.getListItems();
+
+		// CHECK USER HAS GROUP (TRUE / FALSE)
+		await this.getUserGroupPermissions();
 	}
 
-	private getALLItems = async () => {
+	private getALLItems = async (): Promise<void> => {
 		const allItems = await this.commonService.getAll(ListName.PNPV3LIST);
 		console.log(allItems);
 	};
 
-	private getListItems = async () => {
+	private getListItems = async (): Promise<void> => {
 		const { siteUrl } = this.props || {};
 		const listItems = await this.commonService.getListItems(ListName.PNPV3LIST, siteUrl);
 		this.setState({ items: listItems });
+	};
+
+	private getUserGroupPermissions = async (): Promise<void> => {
+		const hasPermissions = await this.commonService.checkLoggedUserGroups(UserGroups.SampleGroup);
+		console.log(hasPermissions);
 	};
 
 	public onRenderDetailsHeader(
@@ -122,17 +131,18 @@ export default class SampleList extends React.Component<IListFormProps, ISampleL
 	): JSX.Element {
 		return (
 			<Sticky stickyPosition={StickyPositionType.Header} isScrollSynced={true}>
-				{defaultRender!({
-					...props,
-					onRenderColumnHeaderTooltip: (tooltipHostProps: ITooltipHostProps) => (
-						<TooltipHost {...tooltipHostProps} />
-					),
-				})}
+				{defaultRender &&
+					defaultRender({
+						...props,
+						onRenderColumnHeaderTooltip: (tooltipHostProps: ITooltipHostProps) => (
+							<TooltipHost {...tooltipHostProps} />
+						),
+					})}
 			</Sticky>
 		);
 	}
 
-	private _renderItemColumn(item: ISampleList, index: number, column: IColumn) {
+	private _renderItemColumn(item: ISampleList, index: number, column: IColumn): JSX.Element {
 		const fieldContent = item[column.fieldName as keyof ISampleList] as string;
 
 		switch (column.key) {

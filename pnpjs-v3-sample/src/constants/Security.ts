@@ -1,3 +1,3 @@
 export class UserGroups {
-    public static readonly Buyer = 'IFRC_Buyer';
+    public static readonly SampleGroup = 'SAMPLE_DEV_GROUP';
 }
