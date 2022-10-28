@@ -189,18 +189,17 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 		}
 	};
 
-	private openFileDialog = (): void => {
+	private handleFileDialog = (): void => {
 		document.getElementById('sample-file-picker').click();
 	};
 
-	private removeFile = (): void => {
+	private handleRemoveFile = (): void => {
 		this.setState({ files: null });
 	};
 
-	private onUploadDocuments = (e: React.ChangeEvent<HTMLInputElement>): void => {
-		this.setState({ files: e.target.files });
-		console.log(e.target.files);
-		console.log(this.state.files);
+	private handleFilePicker = (event: React.ChangeEvent<HTMLInputElement>): void => {
+		this.setState({ files: event.target.files });
+		console.log(event.target.files);
 	};
 
 	public render(): React.ReactElement<ICreateFormProps> {
@@ -237,12 +236,12 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 								type='file'
 								name='File'
 								style={{ display: 'none' }}
-								onChange={(e) => this.onUploadDocuments(e)}
+								onChange={(event) => this.handleFilePicker(event)}
 							/>
 						</div>
 						<DefaultButton
 							text='Upload Files'
-							onClick={this.openFileDialog}
+							onClick={this.handleFileDialog}
 							iconProps={uploadIcon}
 						/>
 
@@ -264,7 +263,7 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 										<IconButton
 											styles={iconButtonStyles}
 											iconProps={removeIcon}
-											onClick={this.removeFile}
+											onClick={this.handleRemoveFile}
 										/>
 									</td>
 								</tr>
