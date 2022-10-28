@@ -190,6 +190,7 @@ export default class SampleForm extends React.Component<ICreateFormProps, ISampl
 	};
 
 	private handleFileDialog = (): void => {
+		(document.getElementById('sample-file-picker') as HTMLInputElement).value = '';
 		document.getElementById('sample-file-picker').click();
 	};
 
