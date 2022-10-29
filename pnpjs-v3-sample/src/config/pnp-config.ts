@@ -16,7 +16,7 @@ import '@pnp/sp/site-users/web';
 var _sp: SPFI = null;
 
 export const getSP = (context?: WebPartContext): SPFI => {
-	if (context !== null) {
+	if (context) {
 		_sp = spfi().using(SPFx(context)).using(PnPLogging(LogLevel.Warning));
 	}
 	return _sp;

@@ -57,7 +57,7 @@ export default class CommonService {
 				sampleListItem.Name = item.Name;
 				sampleListItem.Age = item.Age;
 				sampleListItem.Address = item.Address;
-				sampleListItem.DateOfBirth = item.DateOfBirth;
+				sampleListItem.DateOfBirth = item.DateOfBirth?.split('T')[0];
 				sampleListItem.Gender = item.Gender;
 				sampleListItem.MobileNo = item.MobileNo;
 				sampleListItem.RecordViewUrl = `${siteUrl}${SitePages.SampleForm}${item.Id}`;
